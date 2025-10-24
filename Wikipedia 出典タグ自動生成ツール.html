@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Wikipedia 出典タグ自動生成ツール</title>
+<style>
+  body { font-family: sans-serif; margin: 20px; }
+  label { display: block; margin-top: 8px; }
+  textarea { width: 100%; height: 150px; margin-top: 10px; }
+  select, input { margin-top: 5px; }
+  button { margin-top: 15px; padding: 8px 16px; }
+</style>
+</head>
+<body>
+
+<h2>Wikipedia 出典タグ自動生成ツール</h2>
+
+<label>出典タイプを選択:
+  <select id="citeType" onchange="switchForm()">
+    <option value="book">📚 書籍（Cite book）</option>
+    <option value="journal">📖 学術論文（Cite journal）</option>
+    <option value="news">📰 ニュース記事（Cite news）</option>
+    <option value="web">🌐 ウェブページ（Cite web）</option>
+  </select>
+</label>
+
+<div id="formFields"></div>
+
+<button type="button" onclick="generateRef()">出典タグを生成</button>
+<button type="button" onclick="copyToClipboard()">コピー</button>
+
+<h3>生成されたタグ:</h3>
+<textarea id="output" readonly></textarea>
+
+<script>
+function switchForm() {
+  const type = document.getElementById("citeType").value;
+  let formHtml = "";
+
+  if (type === "web") {
+    formHtml = `
+      <label>タイトル: <input type="text" id="title"></label>
+      <label>URL: <input type="text" id="url"></label>
+      <label>著者: <input type="text" id="author"></label>
+      <label>サイト名/出版社: <input type="text" id="publisher"></label>
+      <label>公開日: <input type="text" id="date"></label>
+      <label>参照日: <input type="text" id="accessdate"></label>
+      <label>言語: <input type="text" id="language" placeholder="例: ja"></label>`;
+  } else if (type === "book") {
+    formHtml = `
+      <label>書名: <input type="text" id="title"></label>
+      <label>著者: <input type="text" id="author"></label>
+      <label>出版社: <input type="text" id="publisher"></label>
+      <label>出版年: <input type="text" id="date"></label>
+      <label>ISBN: <input type="text" id="isbn"></label>
+      <label>言語: <input type="text" id="language" placeholder="例: ja"></label>`;
+  } else if (type === "news") {
+    formHtml = `
+      <label>記事タイトル: <input type="text" id="title"></label>
+      <label>新聞・ニュース媒体名: <input type="text" id="newspaper"></label>
+      <label>著者: <input type="text" id="author"></label>
+      <label>日付: <input type="text" id="date"></label>
+      <label>URL: <input type="text" id="url"></label>
+      <label>参照日: <input type="text" id="accessdate"></label>
+      <label>言語: <input type="text" id="language" placeholder="例: ja"></label>`;
+  } else if (type === "journal") {
+    formHtml = `
+      <label>論文タイトル: <input type="text" id="title"></label>
+      <label>著者: <input type="text" id="author"></label>
+      <label>雑誌名: <input type="text" id="journal"></label>
+      <label>巻: <input type="text" id="volume"></label>
+      <label>号: <input type="text" id="issue"></label>
+      <label>ページ範囲: <input type="text" id="pages"></label>
+      <label>出版年: <input type="text" id="date"></label>
+      <label>DOI: <input type="text" id="doi"></label>
+      <label>URL: <input type="text" id="url"></label>
+      <label>参照日: <input type="text" id="accessdate"></label>
+      <label>言語: <input type="text" id="language" placeholder="例: ja"></label>`;
+  }
+  document.getElementById("formFields").innerHTML = formHtml;
+}
+
+function generateRef() {
+  const type = document.getElementById("citeType").value;
+  let ref = "<ref>{{";
+
+  if (type === "web") {
+    ref += "Cite web\n";
+    ref += addField("author","author");
+    ref += addField("title","title");
+    ref += addField("url","url");
+    ref += addField("publisher","publisher");
+    ref += addField("date","date");
+    ref += addField("accessdate","access-date");
+    ref += addField("language","language");
+  } else if (type === "book") {
+    ref += "Cite book\n";
+    ref += addField("author","author");
+    ref += addField("title","title");
+    ref += addField("publisher","publisher");
+    ref += addField("date","date");
+    ref += addField("isbn","ISBN");
+    ref += addField("language","language");
+  } else if (type === "news") {
+    ref += "Cite news\n";
+    ref += addField("author","author");
+    ref += addField("title","title");
+    ref += addField("newspaper","newspaper");
+    ref += addField("date","date");
+    ref += addField("url","url");
+    ref += addField("accessdate","access-date");
+    ref += addField("language","language");
+  } else if (type === "journal") {
+    ref += "Cite journal\n";
+    ref += addField("author","author");
+    ref += addField("title","title");
+    ref += addField("journal","journal");
+    ref += addField("volume","volume");
+    ref += addField("issue","issue");
+    ref += addField("pages","pages");
+    ref += addField("date","date");
+    ref += addField("doi","doi");
+    ref += addField("url","url");
+    ref += addField("accessdate","access-date");
+    ref += addField("language","language");
+  }
+
+  ref += "}}</ref>";
+  document.getElementById("output").value = ref;
+}
+
+function addField(id, alt) {
+  const el = document.getElementById(id);
+  const val = el ? el.value : "";
+  return (val && val.trim() !== "") ? (" | " + alt + " = " + val + "\n") : "";
+}
+
+function copyToClipboard() {
+  const output = document.getElementById("output");
+  output.select();
+  document.execCommand("copy");
+  alert("出典タグをコピーしました！");
+}
+
+// 初期表示（書籍をデフォルト選択）
+document.getElementById('citeType').selectedIndex = 0;
+switchForm();
+</script>
+
+</body>
+</html>
