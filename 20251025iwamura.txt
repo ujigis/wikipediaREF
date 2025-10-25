@@ -9,6 +9,10 @@ https://ja.wikipedia.org/wiki/%E5%88%A9%E7%94%A8%E8%80%85:Namako2025/sandbox
 岩村秋祭り(新規項目)
 https://ja.wikipedia.org/wiki/%E5%88%A9%E7%94%A8%E8%80%85:Iwamurahirometai/sandbox
 
+<gallery>
+Image:粟田神社_-_入口石鳥居.jpg|入口石鳥居
+Image:粟田神社_-_手水舎.jpg|手水舎
+</gallery>
 
 インフォボックス参考
 
@@ -84,6 +88,7 @@ https://ja.wikipedia.org/wiki/%E5%88%A9%E7%94%A8%E8%80%85:Iwamurahirometai/sandb
 |指定・登録等日 = 2003年5月<ref name="futagawa-honjin" />
 |備考 = 
 }}
+
 
 
 
